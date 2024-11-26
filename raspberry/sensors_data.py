@@ -87,7 +87,7 @@ def get_accelerometer():
         return None
 
 try:
-    # Bucle infinito para enviar datos de sensores cada segundo
+    # Bucle infinito para enviardatos de sensores cada segundo
     while True:
         
         log_data = {"timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
