@@ -25,7 +25,7 @@ mx30.enable_spo2()
 # Configura el modo de numeración de pines (BCM o BOARD) TOUCH SENSOR_________
 GPIO.setmode(GPIO.BCM)
 # Configura el pin al que está conectado el sensor táctil (cambia el número de pin si es necesario)
-touch_pin = 17  ## Ponerlo en el D16
+touch_pin = 16  ## Ponerlo en el D16
 # Configura el pin como entrada
 GPIO.setup(touch_pin, GPIO.IN)
 
