@@ -33,8 +33,9 @@ GPIO.setup(touch_pin, GPIO.IN)
 i2cbus = SMBus(1)  # Create a new I2C bus
 i2caddress = 0x4C  # Address of MCP23017 device
 
-
 log_file = "log_local/sensors_log.txt"
+
+user_id = "raspberry_01"
 
 # Función para escribir en el archivo de log
 def write_log(data):
@@ -51,7 +52,7 @@ def get_heart_rate():
         spo2 = int(mx30.red / 100)
         
         if mx30.ir != mx30.buffer_ir:
-            return hb  # Devuelve el valor de ritmo cardíaco en BPM
+            return {"user": user_id, "bpm": hb}
         else:
             return None  # En caso de no detectar cambio en IR, devuelve None
             
@@ -64,9 +65,9 @@ def get_heart_rate():
 def get_touch():
     try:
         if GPIO.input(touch_pin):
-            return 1
+            return {"user": user_id, "state": 1}
         else:
-            return 0
+            return {"user": user_id, "state": 1}
     except Exception as e:
         print("Error al obtener el valor de touch:", e)
         return None
@@ -77,7 +78,7 @@ def get_accelerometer():
         X = i2cbus.read_byte_data(i2caddress, 0x00)  # Read the value of Port B
         Y = i2cbus.read_byte_data(i2caddress, 0x01)  # Read the value of Port B
         Z = i2cbus.read_byte_data(i2caddress, 0x02)  # Read the value of Port B
-        return {
+        return { "user": user_id,
             "x": X ,
             "y": Y ,
             "z": Z 
@@ -95,13 +96,15 @@ try:
         # Obtiene y publica datos de cada sensor individualmente con manejo de errores
         heart_rate = get_heart_rate()
         if heart_rate is not None:
-            client.publish(topic_hr, heart_rate) #en BPM
-            log_data["heart_rate"] = heart_rate
+            client.publish(topic_hr, json.dumps(heart_rate)) #en BPM
+            heart_value = heart_rate["bmp"]
+            log_data["heart_rate"] = heart_value
 
         touch = get_touch()
         if touch is not None:
-            client.publish(topic_touch, touch)
-            log_data["touch"] = touch
+            client.publish(topic_touch, json.dumps(touch))
+            touch_value = touch["state"]
+            log_data["touch"] = touch_value
 
         accelerometer = get_accelerometer()
         if accelerometer is not None:

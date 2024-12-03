@@ -16,6 +16,8 @@ topic_weather = "weather"
 
 log_file = "/home/pi/Desktop/ejercicios/proyecto/log_local/weather_log.txt"
 
+user_id = "raspberry_01"
+
 # Función para obtener la temperatura de Bilbao
 def get_bilbao_weather():
     try:
@@ -30,7 +32,7 @@ def get_bilbao_weather():
         if response.status_code == 200:
             weather_data = response.json()
             temperature = weather_data["current_weather"]["temperature"]
-            return temperature
+            return {"user": user_id, "temperature": temperature}
         else:
             print("Error al obtener datos del tiempo en Bilbao:", response.status_code)
             return None
@@ -46,7 +48,7 @@ def write_log(data):
 # Obtiene y publica la temperatura de Bilbao
 temperature_bilbao = get_bilbao_weather()
 if temperature_bilbao is not None:
-    log_entry = f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Temperature in Bilbao {temperature_bilbao} ºC"
+    log_entry = f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Temperature in Bilbao {temperature_bilbao["temperature"]} ºC"
     client.publish(topic_weather, str(temperature_bilbao))
     print(f"Temperature in Bilbao: {temperature_bilbao} °C")
     write_log(log_entry)

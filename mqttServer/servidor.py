@@ -28,35 +28,35 @@ def on_message(client, userdata, msg):
         if topic == "sensor/heartrate":
             json_body = [{
                 "measurement": "heartrate",
-                "tags": {"sensor": "heart_sensor"},
+                "tags": {"sensor": "heart_sensor", "user": payload["user"]},
                 "time": datetime.utcnow().isoformat(),
-                "fields": {"bpm": int(payload)}  # Ritmo cardíaco en BPM
+                "fields": {"bpm": payload["bpm"]}  # Ritmo cardíaco en BPM
             }]
         elif topic == "sensor/touch":
             json_body = [{
                 "measurement": "touch",
-                "tags": {"sensor": "touch_sensor"},
+                "tags": {"sensor": "touch_sensor", "user": payload["user"]},
                 "time": datetime.utcnow().isoformat(),
-                "fields": {"state": int(payload)}  # Estado táctil: 0 o 1
+                "fields": {"state": payload["state"]}  # Estado táctil: 0 o 1
             }]
         elif topic == "sensor/accelerometer":
             accel_data = json.loads(payload)
             json_body = [{
                 "measurement": "accelerometer",
-                "tags": {"sensor": "accelerometer"},
+                "tags": {"sensor": "accelerometer", "user": payload["user"]},
                 "time": datetime.utcnow().isoformat(),
                 "fields": {
-                    "x": accel_data["x"],
-                    "y": accel_data["y"],
-                    "z": accel_data["z"]
+                    "x": payload["x"],
+                    "y": payload["y"],
+                    "z": payload["z"]
                 }
             }]
         elif topic == "weather":
             json_body = [{
                 "measurement": "weather",
-                "tags": {"sensor": "weather_api"},
+                "tags": {"sensor": "weather_api", "user": payload["user"]},
                 "time": datetime.utcnow().isoformat(),
-                "fields": {"temperature": float(payload)}  # Estado táctil: 0 o 1
+                "fields": {"temperature": payload["temperature"]}
             }]
         
         # Inserta los datos en InfluxDB
