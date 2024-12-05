@@ -31,7 +31,7 @@ def get_bilbao_weather():
         
         if response.status_code == 200:
             weather_data = response.json()
-            temperature = weather_data["current_weather"]["temperature"]
+            temperature = float(weather_data["current_weather"]["temperature"])
             return {"user": user_id, "temperature": temperature}
         else:
             print("Error al obtener datos del tiempo en Bilbao:", response.status_code)
@@ -48,9 +48,9 @@ def write_log(data):
 # Obtiene y publica la temperatura de Bilbao
 temperature_bilbao = get_bilbao_weather()
 if temperature_bilbao is not None:
-    log_entry = f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Temperature in Bilbao {temperature_bilbao["temperature"]} ºC"
-    client.publish(topic_weather, str(temperature_bilbao))
-    print(f"Temperature in Bilbao: {temperature_bilbao} °C")
+    log_entry = f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - Temperature in Bilbao {temperature_bilbao['temperature']} ºC"
+    client.publish(topic_weather, json.dumps(temperature_bilbao) )
+    print(f"Temperature in Bilbao: {temperature_bilbao['temperature']} °C")
     write_log(log_entry)
     time.sleep(1)
     

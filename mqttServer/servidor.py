@@ -23,40 +23,50 @@ def on_message(client, userdata, msg):
         payload = msg.payload.decode("utf-8")  # Decodifica el mensaje
         topic = msg.topic
         
+        # Intentar cargar el payload como JSON
+        try:
+            data = json.loads(payload)
+        except json.JSONDecodeError:
+            print(f"Error: Payload no es JSON válido: {payload}")
+            return
+        
         # Prepara los datos para InfluxDB
         json_body = []
-        if topic == "sensor/heartrate":
+
+        if topic == "sensor/heartrate" and "user" in data and "bpm" in data:
             json_body = [{
                 "measurement": "heartrate",
-                "tags": {"sensor": "heart_sensor", "user": payload["user"]},
+                "tags": {"sensor": "heart_sensor", "user": data["user"]},
                 "time": datetime.utcnow().isoformat(),
-                "fields": {"bpm": payload["bpm"]}  # Ritmo cardíaco en BPM
+                "fields": {"bpm": float(data["bpm"])}  # Asegura que sea un número
             }]
-        elif topic == "sensor/touch":
+
+        elif topic == "sensor/touch" and "user" in data and "state" in data:
             json_body = [{
                 "measurement": "touch",
-                "tags": {"sensor": "touch_sensor", "user": payload["user"]},
+                "tags": {"sensor": "touch_sensor", "user": data["user"]},
                 "time": datetime.utcnow().isoformat(),
-                "fields": {"state": payload["state"]}  # Estado táctil: 0 o 1
+                "fields": {"state": int(data["state"])}  # Asegura que sea un entero
             }]
-        elif topic == "sensor/accelerometer":
-            accel_data = json.loads(payload)
+
+        elif topic == "sensor/accelerometer" and all(k in data for k in ["user", "x", "y", "z"]):
             json_body = [{
                 "measurement": "accelerometer",
-                "tags": {"sensor": "accelerometer", "user": payload["user"]},
+                "tags": {"sensor": "accelerometer", "user": data["user"]},
                 "time": datetime.utcnow().isoformat(),
                 "fields": {
-                    "x": payload["x"],
-                    "y": payload["y"],
-                    "z": payload["z"]
+                    "x": float(data["x"]),
+                    "y": float(data["y"]),
+                    "z": float(data["z"])
                 }
             }]
-        elif topic == "weather":
+
+        elif topic == "weather" and "temperature" in data:
             json_body = [{
                 "measurement": "weather",
-                "tags": {"sensor": "weather_api", "user": payload["user"]},
+                "tags": {"sensor": "weather_api"},
                 "time": datetime.utcnow().isoformat(),
-                "fields": {"temperature": payload["temperature"]}
+                "fields": {"temperature": data["temperature"]}
             }]
         
         # Inserta los datos en InfluxDB

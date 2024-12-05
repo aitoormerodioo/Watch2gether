@@ -9,7 +9,7 @@ from datetime import datetime
 from smbus import SMBus
 
 # Configuración del broker MQTT
-broker_address = "10.172.117.163"  # Cambia esto por la IP de tu portátil
+broker_address = "10.172.117.194"  # Cambia esto por la IP de tu portátil
 client = mqtt.Client()
 client.connect(broker_address, 1883, 60)
 
@@ -31,9 +31,10 @@ GPIO.setup(touch_pin, GPIO.IN)
 
 # Configurar el address del Accel 3 ejes - ACCELEROMETER_____________
 i2cbus = SMBus(1)  # Create a new I2C bus
-i2caddress = 0x4C  # Address of MCP23017 device
+i2caddress = 0x4C  # Address of MCP23017 device (IZQUIER I2C)
+i2cbus.write_byte_data(i2caddress, 0x07, 0x01) # ON mode
 
-log_file = "log_local/sensors_log.txt"
+log_file = "/home/pi/Desktop/ejercicios/proyecto/log_local/sensors_log.txt"
 
 user_id = "raspberry_01"
 
@@ -67,7 +68,7 @@ def get_touch():
         if GPIO.input(touch_pin):
             return {"user": user_id, "state": 1}
         else:
-            return {"user": user_id, "state": 1}
+            return {"user": user_id, "state": 0}
     except Exception as e:
         print("Error al obtener el valor de touch:", e)
         return None
@@ -93,11 +94,16 @@ try:
         
         log_data = {"timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
         
+        accelerometer = get_accelerometer()
+        if accelerometer is not None:
+            client.publish(topic_accel, json.dumps(accelerometer))  # Envía como JSON
+            log_data["accelerometer"] = accelerometer
+
         # Obtiene y publica datos de cada sensor individualmente con manejo de errores
         heart_rate = get_heart_rate()
         if heart_rate is not None:
             client.publish(topic_hr, json.dumps(heart_rate)) #en BPM
-            heart_value = heart_rate["bmp"]
+            heart_value = heart_rate["bpm"]
             log_data["heart_rate"] = heart_value
 
         touch = get_touch()
@@ -106,10 +112,6 @@ try:
             touch_value = touch["state"]
             log_data["touch"] = touch_value
 
-        accelerometer = get_accelerometer()
-        if accelerometer is not None:
-            client.publish(topic_accel, json.dumps(accelerometer))  # Envía como JSON
-            log_data["accelerometer"] = accelerometer
         
         write_log(json.dumps(log_data))
         # Espera 1 segundo antes de la siguiente iteración
