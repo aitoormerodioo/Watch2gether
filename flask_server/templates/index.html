@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monitoreo de Salud</title>
+</head>
+<body>
+    <h1>Datos de Sensor: Heartrate</h1>
+    <table border="1">
+        <tr>
+            <th>Tiempo</th>
+            <th>BPM</th>
+        </tr>
+        {% for entry in data %}
+        <tr>
+            <td>{{ entry.time }}</td>
+            <td>{{ entry.bpm }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
