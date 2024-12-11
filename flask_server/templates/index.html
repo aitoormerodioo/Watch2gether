@@ -1,21 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Monitoreo de Salud</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch2gether Health</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 </head>
 <body>
-    <h1>Datos de Sensor: Heartrate</h1>
-    <table border="1">
-        <tr>
-            <th>Tiempo</th>
-            <th>BPM</th>
-        </tr>
-        {% for entry in data %}
-        <tr>
-            <td>{{ entry.time }}</td>
-            <td>{{ entry.bpm }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <header>
+        <h1>Bienvenido, {{ user }}</h1>
+        <p>Monitoreo en tiempo real de tu salud mientras haces deporte</p>
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo de Monitoreo" class="logo">
+    </header>
+
+    <main>
+        <h2>Running - Heartrate</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tiempo</th>
+                    <th>BPM</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in data %}
+                <tr>
+                    <td>{{ entry.time }}</td>
+                    <td>{{ entry.bpm }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Monitoreo de Salud. Todos los derechos reservados.</p>
+    </footer>
 </body>
 </html>

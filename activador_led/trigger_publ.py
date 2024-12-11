@@ -1,6 +1,6 @@
 import time
 from influxdb_client import InfluxDBClient
-import RPi.GPIO as GPIO
+import paho.mqtt.client as mqtt
 
 # Configuración de InfluxDB
 influxdb_url = "http://localhost:8086"
@@ -8,10 +8,11 @@ influxdb_token = "7VQIHFGpHOc2nyXcf3eU28EWPZzOV4SzOce7ZHblLtYhNnx-p37cEeqpfsf4QT
 influxdb_org = "Deusto"
 influxdb_bucket = "sensors_db"
 
-# Configuración del LED
-LED_PIN = 17
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(LED_PIN, GPIO.OUT)
+# Configuración del broker MQTT
+broker_address = "localhost"  # IP de la Raspberry Pi o broker
+mqtt_topic = "raspberry/led"
+mqtt_client = mqtt.Client()
+mqtt_client.connect(broker_address, 1883, 60)
 
 # Conexión a InfluxDB
 influx_client = InfluxDBClient(url=influxdb_url, token=influxdb_token, org=influxdb_org)
@@ -32,15 +33,15 @@ def check_threshold():
     for table in result_z:
         for record in table.records:
             z = record.get_value()
-            if z > 50:  # Límite para Z 
+            if z > 50:  # Límite para Z
                 z_critical = True
-                print(f"ALERTA: VAS MAS LENTO QEU TU AMIGO: {z}")
+                print(f"ALERTA VAS MAS LENTO QUE TU AMIGO")
 
-    # Activar o desactivar LED en función de las alertas
+    # Publicar mensaje MQTT
     if z_critical:
-        GPIO.output(LED_PIN, GPIO.HIGH)  # Enciende el LED
+        mqtt_client.publish(mqtt_topic, "ON")  # Enciende el LED
     else:
-        GPIO.output(LED_PIN, GPIO.LOW)  # Apaga el LED
+        mqtt_client.publish(mqtt_topic, "OFF")  # Apaga el LED
 
 try:
     while True:
@@ -48,5 +49,5 @@ try:
         time.sleep(5)  # Consulta cada 5 segundos
 
 except KeyboardInterrupt:
-    print("Interrupción manual. Limpiando GPIO...")
-    GPIO.cleanup()
+    print("Interrupción manual. Finalizando...")
+    mqtt_client.disconnect()
