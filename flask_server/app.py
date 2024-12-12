@@ -16,7 +16,7 @@ def index():
     # Consulta para obtener datos del sensor de heartrate
     query = '''
     from(bucket: "sensors_db")
-    |> range(start: -24h)
+    |> range(start: -10s)
     |> filter(fn: (r) => r._measurement == "heartrate" and r._field == "bpm")
     |> sort(columns: ["_time"], desc: true)
     '''
