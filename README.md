@@ -128,7 +128,7 @@ Include visual examples of:
 
 - **Group Members:**
   - [Aitor Merodio Benito](https://github.com/aitoormerodioo)
-  - [Alejadnro Contreras Alegrua](https://github.com/contreras-alejandro)
+  - [Alejadnro Contreras Alegria](https://github.com/contreras-alejandro)
 
 
 ---
