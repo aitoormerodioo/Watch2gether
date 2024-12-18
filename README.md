@@ -118,11 +118,11 @@ pip install flask paho-mqtt influxdb
 
 ### Screenshots
 Include visual examples of:
+-Prototype
+  ![IMG_1085](https://github.com/user-attachments/assets/7593a585-abd0-49d4-b220-dd7b0ed4b5e1)
 - Heart rate data in the Flask interface.
 - Detailed graphs in Grafana.
 
-## Reflection and Learnings
-This project integrates key IoT concepts, such as sensor usage, MQTT communication, and real-time data visualization. It also fosters skills in programming, teamwork, and solving practical problems.
 
 ## Credits
 
@@ -130,9 +130,6 @@ This project integrates key IoT concepts, such as sensor usage, MQTT communicati
   - [Aitor Merodio Benito](https://github.com/aitoormerodioo)
   - [Alejadnro Contreras Alegrua](https://github.com/contreras-alejandro)
 
-## License
-
-This project is licensed under the [MIT License](LICENSE).
 
 ---
 
