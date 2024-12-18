@@ -120,7 +120,12 @@ pip install flask paho-mqtt influxdb
 -Prototype
   ![IMG_1085](https://github.com/user-attachments/assets/7593a585-abd0-49d4-b220-dd7b0ed4b5e1)
 - Heart rate data in the Flask interface.
+  ![flask](https://github.com/user-attachments/assets/ffc685f4-74e1-4f6e-be84-33cce9436c55)
 - Detailed graphs in Grafana.
+   ![grafana_cap](https://github.com/user-attachments/assets/482e5dd8-6e65-4ad2-809f-9da465ecd39c)
+- Influx.
+  ![influx_cap](https://github.com/user-attachments/assets/0db1af3d-5156-4425-a9e6-2dc1c79845cf)
+
 
 
 ## Credits
