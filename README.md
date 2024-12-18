@@ -117,7 +117,6 @@ pip install flask paho-mqtt influxdb
 ## Results
 
 ### Screenshots
-Include visual examples of:
 -Prototype
   ![IMG_1085](https://github.com/user-attachments/assets/7593a585-abd0-49d4-b220-dd7b0ed4b5e1)
 - Heart rate data in the Flask interface.
